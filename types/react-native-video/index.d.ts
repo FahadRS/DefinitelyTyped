@@ -16,11 +16,25 @@ export interface OnLoadData {
   canStepForward: boolean;
   currentTime: number;
   duration: number;
+  videoTracks: VideoTracks[];
   naturalSize: {
     height: number;
     width: number;
     orientation: 'horizontal' | 'landscape';
   };
+}
+
+export interface VideoTracks {
+  trackId: number;
+  codecs: string;
+  bitrate: number;
+  height : number;
+  width : number;
+}
+
+export interface VideoTrack {
+  type: 'auto' | 'disabled' | 'resolution' | 'index';
+  value?: string | number;
 }
 
 export interface OnProgressData {
@@ -48,6 +62,31 @@ export const TextTrackType: {
   VTT: 'text/vtt';
 };
 
+export interface TextTrack {
+  title?: string;
+  language?: string;
+  type: 'application/x-subrip' | 'application/ttml+xml' | 'text/vtt';
+  uri: string;  
+}
+
+export interface SelectedTextTrack{
+  type: "system" | "disabled" | "title" |  "language" | "index",
+  value?:  string | number
+}
+
+export const enum SelectedTextTrackType {
+  system = "system" ,
+  disabled = "disabled" ,
+  title = "title" ,   
+  language = "language",
+  index = "index"
+}
+
+export interface VideoSource {
+  uri? : string
+  type? : string
+}
+
 export interface VideoProperties extends ViewProps {
   /* Native only */
   src?: any;
@@ -68,7 +107,7 @@ export interface VideoProperties extends ViewProps {
 
   /* Wrapper component */
   // Opaque type returned by require('./video.mp4')
-  source: { uri?: string } | number;
+  source: VideoSource | number;
   resizeMode?: "stretch" | "contain" | "cover" | "none"; // via Image#resizeMode
   posterResizeMode?: "stretch" | "contain" | "cover" | "none"; // via Image#resizeMode
   poster?: string;
@@ -105,10 +144,8 @@ export interface VideoProperties extends ViewProps {
   onPlaybackRateChange?(data: { playbackRate: number }): void;
   onAudioFocusChanged?(): void;
   onAudioBecomingNoisy?(): void;
-  selectedTextTrack?: {
-    type: 'system' | 'disabled' | 'title' | 'language' | 'index';
-    value?: string | number;
-  };
+  selectedTextTrack?: SelectedTextTrack,
+  selectedVideoTrack?: VideoTrack,  
   textTracks?: Array<{
     title?: string;
     language?: string;
